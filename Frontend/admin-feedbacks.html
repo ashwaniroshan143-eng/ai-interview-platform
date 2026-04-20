@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Feedbacks</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .feedback-page{
+            width:90%;
+            max-width:1100px;
+            margin:30px auto;
+        }
+
+        .feedback-card{
+            background:rgba(255,255,255,0.08);
+            padding:20px;
+            border-radius:16px;
+            backdrop-filter:blur(10px);
+            box-shadow:0 10px 30px rgba(0,0,0,0.4);
+            margin-bottom:20px;
+        }
+
+        .feedback-card p{
+            line-height:1.7;
+            margin:8px 0;
+        }
+
+        .delete-btn{
+            background:#ef4444;
+            color:white;
+            border:none;
+            padding:10px 14px;
+            border-radius:10px;
+            cursor:pointer;
+            width:auto;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-logo">
+        <img src="images/logo.png" alt="logo">
+        <h2>AI Student साथी</h2>
+    </div>
+    <ul>
+        <li><a href="admin-dashboard.html">Dashboard</a></li>
+    </ul>
+</nav>
+
+<div class="feedback-page">
+    <h2 class="text-center">User Feedbacks</h2>
+    <div id="feedbackContainer"></div>
+</div>
+<div class="dashboard-card" id="manageFeedbacks">
+    <h3>Manage Feedbacks</h3>
+    <p>View all user feedbacks submitted from dashboard and delete them if needed.</p>
+    <button class="primary-btn">View Feedbacks</button>
+</div>
+
+<script src="js/admin-feedbacks.js"></script>
+</body>
+</html>

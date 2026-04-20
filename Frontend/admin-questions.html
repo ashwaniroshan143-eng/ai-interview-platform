@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Questions</title>
+    <link rel="stylesheet" href="css/style.css">
+    
+
+    <style>
+        .question-page{
+            width:90%;
+            max-width:1200px;
+            margin:30px auto;
+        }
+
+        .question-form,
+        .question-list{
+            background:rgba(255,255,255,0.08);
+            padding:24px;
+            border-radius:18px;
+            backdrop-filter:blur(10px);
+            box-shadow:0 10px 30px rgba(0,0,0,0.4);
+            margin-bottom:25px;
+        }
+
+        .question-form form{
+            display:flex;
+            flex-direction:column;
+            gap:12px;
+        }
+
+        .question-form input,
+        .question-form select,
+        .question-form textarea{
+            padding:12px;
+            border:none;
+            border-radius:10px;
+            font-size:14px;
+        }
+
+        .question-filters{
+            display:flex;
+            gap:15px;
+            flex-wrap:wrap;
+            margin-bottom:20px;
+        }
+
+        .question-filters input,
+        .question-filters select{
+            padding:10px;
+            border:none;
+            border-radius:10px;
+            min-width:220px;
+        }
+
+        .question-card{
+            background:rgba(255,255,255,0.08);
+            padding:18px;
+            border-radius:14px;
+            margin-bottom:15px;
+        }
+
+        .edit-btn{
+            background:#f59e0b;
+            color:white;
+            border:none;
+            padding:10px 14px;
+            border-radius:10px;
+            cursor:pointer;
+            margin-top:10px;
+            margin-right:10px;
+        }
+
+        .delete-btn{
+            background:#ef4444;
+            color:white;
+            border:none;
+            padding:10px 14px;
+            border-radius:10px;
+            cursor:pointer;
+            margin-top:10px;
+        }
+    </style>
+</head>
+<body>
+<div id="vanta-bg"></div>
+<nav>
+    <div class="nav-logo">
+        <img src="images/logo.png" alt="logo">
+        <h2>AI Student साथी</h2>
+    </div>
+    <ul>
+        <li><a href="admin-dashboard.html">Dashboard</a></li>
+    </ul>
+</nav>
+
+<div class="question-page">
+
+    <div class="question-form">
+        <h2>Add Question</h2>
+
+        <form id="questionForm">
+            <select id="section" required>
+                <option value="">Select Section</option>
+                <option>Behavioral & HR</option>
+                <option>Technical & Domain Fundamentals</option>
+                <option>Coding & DSA (Data Structures & Algorithms)</option>
+                <option>Aptitude & Logical Reasoning</option>
+                <option>Communication & Verbal English</option>
+                <option>Case Study / Business Scenario Test</option>
+            </select>
+
+            <select id="type" required>
+                <option value="">Select Type</option>
+                <option value="text">Text</option>
+                <option value="mcq">MCQ</option>
+            </select>
+
+            <textarea id="question" placeholder="Enter question" required></textarea>
+
+            <input type="text" id="options" placeholder="Enter MCQ options separated by comma">
+            <input type="text" id="answer" placeholder="Enter correct answer (for MCQ)">
+
+            <button class="primary-btn" type="submit">Add Question</button>
+        </form>
+
+        <p id="questionMessage"></p>
+    </div>
+
+    <div class="question-list">
+        <h2>All Questions</h2>
+
+        <div class="question-filters">
+            <input type="text" id="searchQuestion" placeholder="Search question text">
+            <select id="filterQuestionSection">
+                <option value="">All Sections</option>
+                <option>Behavioral & HR</option>
+                <option>Technical & Domain Fundamentals</option>
+                <option>Coding & DSA (Data Structures & Algorithms)</option>
+                <option>Aptitude & Logical Reasoning</option>
+                <option>Communication & Verbal English</option>
+                <option>Case Study / Business Scenario Test</option>
+            </select>
+            <select id="filterQuestionType">
+                <option value="">All Types</option>
+                <option value="text">Text</option>
+                <option value="mcq">MCQ</option>
+            </select>
+        </div>
+
+        <div id="questionsContainer"></div>
+    </div>
+
+</div>
+
+<script src="js/admin-questions.js"></script>
+<script>
+
+</script>
+</body>
+</html>

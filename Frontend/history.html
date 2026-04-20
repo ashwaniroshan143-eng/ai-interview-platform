@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interview History</title>
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        .main-container{
+            margin-top:40px;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            padding-bottom:40px;
+        }
+
+        .page-title{
+            font-size:32px;
+            margin-bottom:30px;
+            text-align:center;
+        }
+
+        #historyContainer{
+            width:100%;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+        }
+
+        .history-card{
+            width:700px;
+            max-width:95%;
+            background:rgba(255,255,255,0.08);
+            padding:24px;
+            margin-bottom:20px;
+            border-radius:16px;
+            box-shadow:0 8px 20px rgba(0,0,0,0.3);
+            backdrop-filter:blur(10px);
+        }
+
+        .history-card h3{
+            margin-top:0;
+        }
+
+        .history-card ul{
+            margin-top:10px;
+            padding-left:20px;
+        }
+
+        .history-card li{
+            margin-bottom:14px;
+            line-height:1.6;
+        }
+
+        summary{
+            cursor:pointer;
+            font-weight:bold;
+            color:#ffd54f;
+            margin-top:10px;
+        }
+
+        .delete-btn{
+            background:linear-gradient(to right,#ff4b2b,#ff416c);
+            color:white;
+            border:none;
+            padding:10px 18px;
+            border-radius:10px;
+            cursor:pointer;
+            margin-top:15px;
+            width:auto;
+        }
+
+        .status-text{
+            text-align:center;
+            font-size:18px;
+            margin-top:20px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="vanta-bg"></div>
+
+<nav>
+    <div class="nav-logo">
+        <img src="images/logo.png" alt="logo">
+        <h2>AI Student साथी</h2>
+    </div>
+    <ul>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="#" id="logoutLink">Logout</a></li>
+    </ul>
+</nav>
+
+<div class="container main-container">
+    <h2 class="page-title">Your Interview History</h2>
+    <div id="historyContainer"></div>
+</div>
+
+<script>
+VANTA.BIRDS({
+    el: "#vanta-bg",
+    mouseControls: true,
+    touchControls: true,
+    gyroControls: false,
+    minHeight: 200.00,
+    minWidth: 200.00,
+    scale: 1.00,
+    scaleMobile: 1.00,
+    backgroundColor: 0x0,
+    color1: 0x2e55ff,
+    color2: 0xfc0000,
+    colorMode: "lerpGradient",
+    birdSize: 0.9,
+    wingSpan: 17.00,
+    speedLimit: 5.00,
+    separation: 24.00,
+    alignment: 16.00,
+    cohesion: 13.00
+});
+
+document.addEventListener("DOMContentLoaded", async function () {
+    const userEmail = localStorage.getItem("userEmail");
+
+    if (!userEmail) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    const container = document.getElementById("historyContainer");
+
+    function calculateSolvedQuestions(questions) {
+        if (!questions || questions.length === 0) {
+            return { solved: 0, total: 0 };
+        }
+
+        let solved = 0;
+        questions.forEach(q => {
+            if ((q.score ?? 0) > 0) {
+                solved += 1;
+            }
+        });
+
+        return {
+            solved,
+            total: questions.length
+        };
+    }
+
+    function calculateMaxScore(questions) {
+        if (!questions || questions.length === 0) return 0;
+        return questions.length * 3;
+    }
+
+    async function loadHistory() {
+        container.innerHTML = `<p class="status-text">Loading history...</p>`;
+
+        try {
+            const encodedEmail = encodeURIComponent(userEmail);
+            const response = await fetch(`http://localhost:5000/history/${encodedEmail}`);
+            const records = await response.json();
+
+            container.innerHTML = "";
+
+            if (!records || records.length === 0) {
+                container.innerHTML = `<p class="status-text">No history found.</p>`;
+                return;
+            }
+
+            records.forEach((rec, idx) => {
+                const div = document.createElement("div");
+                div.classList.add("history-card");
+
+                const solvedData = calculateSolvedQuestions(rec.questions);
+                const solvedText = `${solvedData.solved}/${solvedData.total}`;
+                const maxScore = calculateMaxScore(rec.questions);
+                const scoreText = `${rec.score ?? 0}/${maxScore}`;
+
+                let qaHtml = "";
+                if (rec.questions && rec.questions.length > 0) {
+                    qaHtml = rec.questions.map(q => `
+                        <li>
+                            <b>Q:</b> ${q.q || ""}<br>
+                            <b>Answer:</b> ${q.answer || "No answer"}<br>
+                            <b>Feedback:</b> ${q.feedback || "No feedback"}<br>
+                            <b>Score:</b> ${q.score ?? 0}/3
+                        </li>
+                    `).join("");
+                } else {
+                    qaHtml = `<li>No question details found.</li>`;
+                }
+
+                div.innerHTML = `
+                    <h3>Attempt ${idx + 1} - ${new Date(rec.date).toLocaleString()}</h3>
+                    <p><b>Total Solved Questions:</b> ${solvedText}</p>
+                    <p><b>Total Score:</b> ${scoreText}</p>
+
+                    <details>
+                        <summary>Questions & Answers</summary>
+                        <ul>${qaHtml}</ul>
+                    </details>
+
+                    <button class="delete-btn" data-id="${rec._id}">Delete</button>
+                `;
+
+                container.appendChild(div);
+            });
+
+            document.querySelectorAll(".delete-btn").forEach(button => {
+                button.addEventListener("click", async function () {
+                    const id = this.getAttribute("data-id");
+                    const confirmDelete = confirm("Are you sure you want to delete this history?");
+                    if (!confirmDelete) return;
+
+                    try {
+                        const response = await fetch(`http://localhost:5000/history/${id}`, {
+                            method: "DELETE"
+                        });
+
+                        const data = await response.json();
+                        alert(data.message || "History deleted");
+                        loadHistory();
+                    } catch (err) {
+                        console.error(err);
+                        alert("Error deleting history");
+                    }
+                });
+            });
+
+        } catch (err) {
+            console.error("Error fetching history:", err);
+            container.innerHTML = `<p class="status-text">Error fetching history. Check console.</p>`;
+        }
+    }
+
+    await loadHistory();
+
+    document.getElementById("logoutLink").addEventListener("click", function (e) {
+        e.preventDefault();
+        localStorage.removeItem("userEmail");
+        localStorage.removeItem("userName");
+        localStorage.removeItem("userRole");
+        window.location.href = "login.html";
+    });
+});
+</script>
+
+</body>
+</html>

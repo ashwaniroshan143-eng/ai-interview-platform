@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Interview Records</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .records-page{
+            width:90%;
+            max-width:1200px;
+            margin:30px auto;
+        }
+
+        .top-bar{
+            display:flex;
+            gap:15px;
+            flex-wrap:wrap;
+            margin-bottom:20px;
+        }
+
+        .top-bar input{
+            padding:12px;
+            border:none;
+            border-radius:10px;
+            min-width:260px;
+        }
+
+        .record-card{
+            background:rgba(255,255,255,0.08);
+            padding:22px;
+            border-radius:16px;
+            backdrop-filter:blur(10px);
+            box-shadow:0 10px 30px rgba(0,0,0,0.4);
+            margin-bottom:20px;
+        }
+
+        .record-card p{
+            margin:8px 0;
+            line-height:1.6;
+        }
+
+        .delete-btn{
+            background:#ef4444;
+            color:white;
+            border:none;
+            padding:10px 14px;
+            border-radius:10px;
+            cursor:pointer;
+            margin-top:10px;
+        }
+
+        details{
+            margin-top:12px;
+        }
+
+        summary{
+            cursor:pointer;
+            font-weight:bold;
+            color:#ffd54f;
+        }
+
+        ul{
+            margin-top:10px;
+            padding-left:20px;
+        }
+
+        li{
+            margin-bottom:12px;
+            line-height:1.6;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-logo">
+        <img src="images/logo.png" alt="logo">
+        <h2>AI Student साथी</h2>
+    </div>
+    <ul>
+        <li><a href="admin-dashboard.html">Dashboard</a></li>
+    </ul>
+</nav>
+
+<div class="records-page">
+    <h2 class="text-center">Admin Interview Records</h2>
+    <div class="top-bar">
+        <input type="text" id="searchInterview" placeholder="Search by user email">
+    </div>
+    <div id="recordsContainer"></div>
+</div>
+
+<script src="js/admin-interviews.js"></script>
+</body>
+</html>

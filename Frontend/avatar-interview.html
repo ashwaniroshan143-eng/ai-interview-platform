@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Avatar Interview</title>
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        .avatar-page{
+            width:90%;
+            max-width:1200px;
+            margin:30px auto;
+        }
+
+        .avatar-layout{
+            display:grid;
+            grid-template-columns:340px 1fr;
+            gap:25px;
+            align-items:start;
+        }
+
+        .avatar-card,
+        .interview-panel{
+            background:rgba(255,255,255,0.08);
+            border-radius:18px;
+            backdrop-filter:blur(10px);
+            box-shadow:0 10px 30px rgba(0,0,0,0.4);
+            padding:24px;
+        }
+
+        .avatar-card{
+            text-align:center;
+            position:sticky;
+            top:20px;
+        }
+
+        .avatar-circle{
+            width:180px;
+            height:180px;
+            margin:0 auto 16px;
+            border-radius:50%;
+            background:radial-gradient(circle at 30% 30%, #60a5fa, #1d4ed8 55%, #0f172a);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:70px;
+            box-shadow:0 0 35px rgba(96,165,250,0.35);
+            transition:0.3s;
+        }
+
+        .avatar-circle.speaking{
+            transform:scale(1.06);
+            box-shadow:0 0 50px rgba(0,198,255,0.55);
+            animation:speakPulse 1s infinite;
+        }
+
+        .avatar-circle.listening{
+            transform:scale(1.06);
+            box-shadow:0 0 50px rgba(34,197,94,0.55);
+            animation:listenPulse 1s infinite;
+        }
+
+        @keyframes speakPulse{
+            0%{ transform:scale(1); }
+            50%{ transform:scale(1.08); }
+            100%{ transform:scale(1); }
+        }
+
+        @keyframes listenPulse{
+            0%{ transform:scale(1); }
+            50%{ transform:scale(1.09); }
+            100%{ transform:scale(1); }
+        }
+
+        .avatar-mouth{
+            width:46px;
+            height:12px;
+            border-radius:20px;
+            background:#fff;
+            margin:10px auto 0;
+            transition:0.2s;
+        }
+
+        .avatar-circle.speaking .avatar-mouth{
+            height:24px;
+            width:34px;
+            border-radius:50%;
+        }
+
+        .status-badge{
+            display:inline-block;
+            padding:8px 14px;
+            border-radius:999px;
+            font-size:14px;
+            font-weight:600;
+            margin-top:8px;
+            background:rgba(255,255,255,0.12);
+        }
+
+        .status-speaking{ color:#7dd3fc; }
+        .status-listening{ color:#86efac; }
+        .status-idle{ color:#fcd34d; }
+
+        .setup-card,
+        .question-box{
+            background:rgba(255,255,255,0.08);
+            border-radius:16px;
+            padding:20px;
+            margin-bottom:20px;
+        }
+
+        .progress-line{
+            font-size:15px;
+            margin-bottom:10px;
+            color:#dbeafe;
+        }
+
+        .timer-box,
+        .confidence-box{
+            display:inline-block;
+            padding:8px 14px;
+            border-radius:10px;
+            background:rgba(255,255,255,0.12);
+            margin-bottom:14px;
+            margin-right:10px;
+            font-weight:700;
+        }
+
+        .answer-box{
+            background:rgba(0,0,0,0.18);
+            border-radius:14px;
+            padding:16px;
+            min-height:130px;
+            line-height:1.7;
+            white-space:pre-wrap;
+        }
+
+        .action-row{
+            display:flex;
+            gap:12px;
+            flex-wrap:wrap;
+            margin-top:18px;
+        }
+
+        .action-row button{
+            width:auto;
+        }
+
+        .tips-box{
+            margin-top:18px;
+            text-align:left;
+            background:rgba(255,255,255,0.06);
+            border-radius:14px;
+            padding:16px;
+        }
+
+        .tips-box ul{
+            margin:10px 0 0 18px;
+            padding:0;
+            line-height:1.8;
+        }
+
+        @media (max-width:900px){
+            .avatar-layout{
+                grid-template-columns:1fr;
+            }
+
+            .avatar-card{
+                position:static;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="vanta-bg"></div>
+
+<nav>
+    <div class="nav-logo">
+        <img src="images/logo.png" alt="logo">
+        <h2>AI Student साथी</h2>
+    </div>
+    <ul>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="#" id="logoutLink">Logout</a></li>
+    </ul>
+</nav>
+
+<div class="avatar-page">
+    <div class="page-header-card">
+        <h2 class="text-center">Behavioral Avatar Interview</h2>
+        <p class="text-center">Practice a real HR-style interview with a speaking AI avatar.</p>
+    </div>
+
+    <div class="avatar-layout">
+        <div class="avatar-card">
+            <div id="avatarCircle" class="avatar-circle">
+                <div>
+                    👨‍💼
+                    <div class="avatar-mouth"></div>
+                </div>
+            </div>
+            <h3>AI HR Interviewer</h3>
+            <div id="avatarStatus" class="status-badge status-idle">Idle</div>
+
+            <div class="tips-box">
+                <h4>How it works</h4>
+                <ul>
+                    <li>Click Start Interview</li>
+                    <li>Avatar asks behavioral questions</li>
+                    <li>Click Start Speaking and answer</li>
+                    <li>Move to next question</li>
+                    <li>Result gets saved automatically</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="interview-panel">
+            <div class="setup-card">
+                <h3>Behavioral Interview Practice</h3>
+                <p>This module asks only HR and behavioral interview questions.</p>
+
+                <div class="action-row">
+                    <button id="startAvatarInterviewBtn" class="primary-btn">Start Interview</button>
+                    <button id="restartInterviewBtn" class="danger-btn">Restart</button>
+                </div>
+            </div>
+
+            <div id="questionArea" style="display:none;">
+                <div class="question-box">
+                    <div id="progressLine" class="progress-line"></div>
+                    <div id="timerBox" class="timer-box">Time Left: 60s</div>
+                    <div id="confidenceBox" class="confidence-box">Confidence: 0%</div>
+                    <h3 id="questionText">Question will appear here</h3>
+                </div>
+
+                <div>
+                    <h3>Your Answer</h3>
+                    <div id="answerBox" class="answer-box">Your spoken answer will appear here...</div>
+                </div>
+
+                <div class="action-row">
+                    <button id="speakQuestionBtn" class="primary-btn">Repeat Question</button>
+                    <button id="startSpeakingBtn" class="success-btn">Start Speaking</button>
+                    <button id="pauseInterviewBtn" class="danger-btn">Pause</button>
+                    <button id="nextQuestionBtn" class="primary-btn">Next Question</button>
+                    <button id="endInterviewBtn" class="danger-btn">End Interview</button>
+                </div>
+            </div>
+
+            <div id="finalResultArea" style="display:none;"></div>
+        </div>
+    </div>
+</div>
+
+<script src="js/avatar-interview.js"></script>
+
+<script>
+
+</script>
+
+</body>
+</html>
