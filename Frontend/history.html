@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Interview History</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+
+        .main-container {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        #historyContainer {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .history-card {
+            width: 700px;
+            max-width: 95%;
+            background: rgba(255,255,255,0.08);
+            padding: 24px;
+            margin-bottom: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .history-card h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .history-card p {
+            line-height: 1.6;
+        }
+
+        .history-card ul {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .history-card li {
+            margin-bottom: 18px;
+            line-height: 1.7;
+        }
+
+        summary {
+            cursor: pointer;
+            font-weight: bold;
+            color: #ffd54f;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        .section-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: rgba(147,197,253,0.15);
+            color: #93c5fd;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .score-box {
+            background: rgba(255,255,255,0.06);
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .question-item {
+            background: rgba(255,255,255,0.06);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .question-item p {
+            margin: 7px 0;
+        }
+
+        .delete-btn {
+            background: linear-gradient(
+                to right,
+                #ff4b2b,
+                #ff416c
+            );
+
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 15px;
+            width: auto;
+        }
+
+        .delete-btn:hover {
+            opacity: 0.9;
+        }
+
+        .status-text {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        .error-text {
+            color: #ff8080;
+        }
+
+        .empty-text {
+            color: #ddd;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div id="vanta-bg"></div>
+
+
+<nav>
+
+    <div class="nav-logo">
+
+        <img
+            src="images/logo.png"
+            alt="logo"
+        >
+
+        <h2>
+            AI Student साथी
+        </h2>
+
+    </div>
+
+
+    <ul>
+
+        <li>
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a href="#" id="logoutLink">
+                Logout
+            </a>
+        </li>
+
+    </ul>
+
+</nav>
+
+
+
+<div class="container main-container">
+
+    <h2 class="page-title">
+        Your Interview History
+    </h2>
+
+    <div id="historyContainer"></div>
+
+</div>
+
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async function () {
+
+        // ==================================================
+        // CHECK LOGIN
+        // ==================================================
+
+        const userEmail =
+            localStorage.getItem("userEmail");
+
+        const userRole =
+            localStorage.getItem("userRole");
+
+
+        if (!userEmail || userRole === "admin") {
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        const container =
+            document.getElementById(
+                "historyContainer"
+            );
+
+
+        // ==================================================
+        // ESCAPE HTML
+        // ==================================================
+
+        function escapeHtml(value) {
+
+            const div =
+                document.createElement("div");
+
+            div.textContent =
+                value || "";
+
+            return div.innerHTML;
+
+        }
+
+
+        // ==================================================
+        // CALCULATE SOLVED QUESTIONS
+        // ==================================================
+
+        function calculateSolvedQuestions(
+            questions
+        ) {
+
+            if (
+                !questions ||
+                questions.length === 0
+            ) {
+
+                return {
+                    solved: 0,
+                    total: 0
+                };
+
+            }
+
+
+            let solved = 0;
+
+
+            questions.forEach(
+                question => {
+
+                    const answer =
+                        (question.answer || "")
+                            .trim();
+
+                    if (answer.length > 0) {
+
+                        solved++;
+
+                    }
+
+                }
+            );
+
+
+            return {
+
+                solved,
+
+                total:
+                    questions.length
+
+            };
+
+        }
+
+
+        // ==================================================
+        // CALCULATE MAXIMUM SCORE
+        // ==================================================
+
+        function calculateMaxScore(
+            questions
+        ) {
+
+            if (
+                !questions ||
+                questions.length === 0
+            ) {
+
+                return 0;
+
+            }
+
+
+            // Every question is scored out of 10
+
+            return questions.length * 10;
+
+        }
+
+
+        // ==================================================
+        // FORMAT DATE
+        // ==================================================
+
+        function formatDate(date) {
+
+            if (!date) {
+
+                return "Unknown date";
+
+            }
+
+
+            const parsedDate =
+                new Date(date);
+
+
+            if (
+                Number.isNaN(
+                    parsedDate.getTime()
+                )
+            ) {
+
+                return "Unknown date";
+
+            }
+
+
+            return parsedDate.toLocaleString();
+
+        }
+
+
+        // ==================================================
+        // LOAD HISTORY
+        // ==================================================
+
+        async function loadHistory() {
+
+            container.innerHTML = `
+
+                <p class="status-text">
+                    Loading history...
+                </p>
+
+            `;
+
+
+            try {
+
+                const encodedEmail =
+                    encodeURIComponent(
+                        userEmail
+                    );
+
+
+                const response =
+                    await fetch(
+                        `http://localhost:5000/history/${encodedEmail}`
+                    );
+
+
+                let records;
+
+
+                try {
+
+                    records =
+                        await response.json();
+
+                } catch (jsonError) {
+
+                    throw new Error(
+                        "Invalid response from server."
+                    );
+
+                }
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        records.message ||
+                        "Unable to load history."
+                    );
+
+                }
+
+
+                container.innerHTML = "";
+
+
+                // ==================================================
+                // NO HISTORY
+                // ==================================================
+
+                if (
+                    !records ||
+                    records.length === 0
+                ) {
+
+                    container.innerHTML = `
+
+                        <p class="status-text empty-text">
+
+                            No interview history found.
+
+                        </p>
+
+                    `;
+
+                    return;
+
+                }
+
+
+                // ==================================================
+                // DISPLAY HISTORY
+                // ==================================================
+
+                records.forEach(
+                    (record, index) => {
+
+                        const card =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        card.classList.add(
+                            "history-card"
+                        );
+
+
+                        const questions =
+                            Array.isArray(
+                                record.questions
+                            )
+                                ? record.questions
+                                : [];
+
+
+                        const solvedData =
+                            calculateSolvedQuestions(
+                                questions
+                            );
+
+
+                        const maxScore =
+                            calculateMaxScore(
+                                questions
+                            );
+
+
+                        const totalScore =
+                            Number(
+                                record.score
+                            ) || 0;
+
+
+                        const section =
+                            record.section ||
+                            "General Interview";
+
+
+                        let questionHtml =
+                            "";
+
+
+                        if (
+                            questions.length === 0
+                        ) {
+
+                            questionHtml = `
+
+                                <li>
+                                    No question details found.
+                                </li>
+
+                            `;
+
+                        } else {
+
+                            questionHtml =
+                                questions.map(
+                                    (
+                                        question,
+                                        questionIndex
+                                    ) => {
+
+                                        const questionText =
+                                            question.q ||
+                                            question.question ||
+                                            "Question not available";
+
+
+                                        const answer =
+                                            question.answer ||
+                                            "No answer";
+
+
+                                        const feedback =
+                                            question.feedback ||
+                                            "No feedback";
+
+
+                                        const score =
+                                            Number(
+                                                question.score
+                                            ) || 0;
+
+
+                                        return `
+
+                                            <li
+                                                class="question-item"
+                                            >
+
+                                                <p>
+
+                                                    <b>
+                                                        Question
+                                                        ${questionIndex + 1}:
+                                                    </b>
+
+                                                    ${escapeHtml(
+                                                        questionText
+                                                    )}
+
+                                                </p>
+
+
+                                                <p>
+
+                                                    <b>
+                                                        Your Answer:
+                                                    </b>
+
+                                                    ${escapeHtml(
+                                                        answer
+                                                    )}
+
+                                                </p>
+
+
+                                                <p>
+
+                                                    <b>
+                                                        AI Feedback:
+                                                    </b>
+
+                                                    ${escapeHtml(
+                                                        feedback
+                                                    ).replace(
+                                                        /\n/g,
+                                                        "<br>"
+                                                    )}
+
+                                                </p>
+
+
+                                                <p>
+
+                                                    <b>
+                                                        Score:
+                                                    </b>
+
+                                                    ${score}/10
+
+                                                </p>
+
+                                            </li>
+
+                                        `;
+
+                                    }
+                                ).join("");
+
+                        }
+
+
+                        card.innerHTML = `
+
+                            <span class="section-badge">
+
+                                ${escapeHtml(
+                                    section
+                                )}
+
+                            </span>
+
+
+                            <h3>
+
+                                Attempt
+                                ${records.length - index}
+
+                                -
+
+                                ${formatDate(
+                                    record.date
+                                )}
+
+                            </h3>
+
+
+                            <div class="score-box">
+
+                                <p>
+
+                                    <b>
+                                        Total Answered Questions:
+                                    </b>
+
+                                    ${solvedData.solved}/${solvedData.total}
+
+                                </p>
+
+
+                                <p>
+
+                                    <b>
+                                        Total Score:
+                                    </b>
+
+                                    ${totalScore}/${maxScore}
+
+                                </p>
+
+
+                                <p>
+
+                                    <b>
+                                        Average Score:
+                                    </b>
+
+                                    ${
+                                        questions.length > 0
+                                            ? (
+                                                totalScore /
+                                                questions.length
+                                            ).toFixed(1)
+                                            : "0.0"
+                                    }/10
+
+                                </p>
+
+                            </div>
+
+
+                            <details>
+
+                                <summary>
+                                    Questions & Answers
+                                </summary>
+
+                                <ul>
+
+                                    ${questionHtml}
+
+                                </ul>
+
+                            </details>
+
+
+                            <button
+                                class="delete-btn"
+                                data-id="${escapeHtml(
+                                    record._id
+                                )}"
+                            >
+
+                                Delete
+
+                            </button>
+
+                        `;
+
+
+                        container.appendChild(
+                            card
+                        );
+
+                    }
+                );
+
+
+                // ==================================================
+                // DELETE BUTTONS
+                // ==================================================
+
+                document
+                    .querySelectorAll(
+                        ".delete-btn"
+                    )
+                    .forEach(
+                        button => {
+
+                            button.addEventListener(
+                                "click",
+                                async function () {
+
+                                    const id =
+                                        this.getAttribute(
+                                            "data-id"
+                                        );
+
+
+                                    if (!id) {
+
+                                        alert(
+                                            "Invalid history record."
+                                        );
+
+                                        return;
+
+                                    }
+
+
+                                    const confirmDelete =
+                                        confirm(
+                                            "Are you sure you want to delete this history?"
+                                        );
+
+
+                                    if (
+                                        !confirmDelete
+                                    ) {
+
+                                        return;
+
+                                    }
+
+
+                                    try {
+
+                                        const response =
+                                            await fetch(
+                                                `http://localhost:5000/history/${encodeURIComponent(id)}`,
+                                                {
+                                                    method:
+                                                        "DELETE"
+                                                }
+                                            );
+
+
+                                        const data =
+                                            await response.json();
+
+
+                                        if (
+                                            !response.ok
+                                        ) {
+
+                                            throw new Error(
+                                                data.message ||
+                                                "Delete failed."
+                                            );
+
+                                        }
+
+
+                                        alert(
+                                            data.message ||
+                                            "History deleted successfully."
+                                        );
+
+
+                                        await loadHistory();
+
+                                    } catch (error) {
+
+                                        console.error(
+                                            "Delete history error:",
+                                            error
+                                        );
+
+
+                                        alert(
+                                            error.message ||
+                                            "Error deleting history."
+                                        );
+
+                                    }
+
+                                }
+                            );
+
+                        }
+                    );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Error fetching history:",
+                    error
+                );
+
+
+                container.innerHTML = `
+
+                    <p class="status-text error-text">
+
+                        Error fetching history.
+
+                        <br>
+
+                        Please make sure the backend server
+                        is running.
+
+                    </p>
+
+                `;
+
+            }
+
+        }
+
+
+        // ==================================================
+        // LOAD HISTORY WHEN PAGE OPENS
+        // ==================================================
+
+        await loadHistory();
+
+
+        // ==================================================
+        // LOGOUT
+        // ==================================================
+
+        const logoutLink =
+            document.getElementById(
+                "logoutLink"
+            );
+
+
+        if (logoutLink) {
+
+            logoutLink.addEventListener(
+                "click",
+                function (event) {
+
+                    event.preventDefault();
+
+
+                    localStorage.removeItem(
+                        "userEmail"
+                    );
+
+                    localStorage.removeItem(
+                        "userName"
+                    );
+
+                    localStorage.removeItem(
+                        "userRole"
+                    );
+
+
+                    window.location.href =
+                        "login.html";
+
+                }
+            );
+
+        }
+
+    }
+);
+
+
+</script>
+
+</body>
+
+</html>

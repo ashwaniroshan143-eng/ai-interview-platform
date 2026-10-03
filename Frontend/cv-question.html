@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>CV Questions</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+
+        .cv-page {
+            width: 90%;
+            max-width: 1000px;
+            margin: 40px auto;
+        }
+
+        .cv-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 18px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            margin-bottom: 25px;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(255,255,255,0.3);
+            border-radius: 15px;
+            padding: 35px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .upload-area input {
+            margin: 20px auto;
+            display: block;
+        }
+
+        .file-name {
+            margin-top: 10px;
+            color: #93c5fd;
+        }
+
+        .question-box {
+            background: rgba(255,255,255,0.08);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .question-number {
+            color: #93c5fd;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .answer-box {
+            width: 100%;
+            min-height: 140px;
+            box-sizing: border-box;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 12px;
+            border: none;
+            resize: vertical;
+            font-size: 16px;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .button-row button {
+            width: auto;
+        }
+
+        .status-message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .feedback-box {
+            background: rgba(255,255,255,0.08);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            line-height: 1.7;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div id="vanta-bg"></div>
+
+
+<nav>
+
+    <div class="nav-logo">
+
+        <img src="images/logo.png" alt="logo">
+
+        <h2>AI Student साथी</h2>
+
+    </div>
+
+    <ul>
+
+        <li>
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a href="#" id="logoutLink">
+                Logout
+            </a>
+        </li>
+
+    </ul>
+
+</nav>
+
+
+
+<div class="cv-page">
+
+
+    <div class="page-header-card">
+
+        <h2 class="text-center">
+            CV Questions
+        </h2>
+
+        <p class="text-center">
+
+            Upload your CV and practice interview questions
+            generated from your resume.
+
+        </p>
+
+    </div>
+
+
+
+    <!-- UPLOAD SECTION -->
+
+    <div id="uploadSection" class="cv-card">
+
+        <h3>
+            Upload Your CV
+        </h3>
+
+        <p>
+            Upload your resume in PDF, DOCX or TXT format.
+        </p>
+
+
+        <div class="upload-area">
+
+            <input
+                type="file"
+                id="cvFile"
+                accept=".pdf,.doc,.docx,.txt"
+            >
+
+            <div
+                id="fileName"
+                class="file-name">
+            </div>
+
+
+            <div class="button-row">
+
+                <button
+                    id="analyzeCvBtn"
+                    class="primary-btn">
+
+                    Analyze CV
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="uploadStatus"
+            class="status-message hidden">
+        </div>
+
+    </div>
+
+
+
+    <!-- INTERVIEW SECTION -->
+
+    <div
+        id="interviewSection"
+        class="cv-card hidden">
+
+        <h3>
+            CV Based Interview
+        </h3>
+
+        <p>
+            The AI interviewer will ask questions based
+            on information found in your CV.
+        </p>
+
+
+        <div class="question-box">
+
+            <div
+                id="questionNumber"
+                class="question-number">
+                Question 1
+            </div>
+
+
+            <h3 id="questionText">
+                Your question will appear here.
+            </h3>
+
+
+            <textarea
+                id="answerText"
+                class="answer-box"
+                placeholder="Type your answer here...">
+            </textarea>
+
+
+            <div class="button-row">
+
+                <button
+                    id="submitAnswerBtn"
+                    class="primary-btn">
+
+                    Submit Answer
+
+                </button>
+
+
+                <button
+                    id="speakAnswerBtn"
+                    class="success-btn">
+
+                    🎤 Speak Answer
+
+                </button>
+
+
+                <button
+                    id="stopSpeakingBtn"
+                    class="danger-btn">
+
+                    Stop Speaking
+
+                </button>
+
+            </div>
+
+
+            <div
+                id="answerStatus"
+                class="status-message hidden">
+            </div>
+
+        </div>
+
+
+        <div
+            id="feedbackBox"
+            class="feedback-box hidden">
+
+        </div>
+
+
+        <div class="button-row">
+
+            <button
+                id="nextQuestionBtn"
+                class="primary-btn hidden">
+
+                Next Question
+
+            </button>
+
+
+            <button
+                id="finishInterviewBtn"
+                class="danger-btn">
+
+                Finish Interview
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- FINAL RESULT -->
+
+    <div
+        id="resultSection"
+        class="cv-card hidden">
+
+        <h3>
+            CV Interview Completed
+        </h3>
+
+
+        <div id="finalResult">
+
+        </div>
+
+
+        <div class="button-row">
+
+            <button
+                onclick="window.location.href='dashboard.html'"
+                class="primary-btn">
+
+                Back to Dashboard
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script src="js/cv-question.js"></script>
+
+</body>
+
+</html>

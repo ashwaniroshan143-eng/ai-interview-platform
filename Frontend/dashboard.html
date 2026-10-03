@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="vanta-bg"></div>
+
+<nav>
+    <div class="nav-logo">
+        <img src="images/logo.png" alt="logo">
+        <h2>AI Student साथी</h2>
+    </div>
+    <ul>
+        <li><a href="#" id="logoutLink">Logout</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+
+    <h1 class="page-heading text-center">Student Dashboard</h1>
+
+    <p class="page-subheading text-center">
+        Choose a feature and continue your interview preparation journey.
+    </p>
+
+    <div class="dashboard-grid">
+
+        <div class="dashboard-card" id="startInterview">
+            <h3>Start AI Mock Interview</h3>
+            <p>Practice AI-based mock interviews & improve skills.</p>
+            <button class="primary-btn">Start Now</button>
+        </div>
+
+
+        <div class="dashboard-card" id="viewHistory">
+            <h3>View History</h3>
+            <p>See your past interview attempts & scores to track your progress.</p>
+            <button class="success-btn">View History</button>
+        </div>
+
+
+        <div class="dashboard-card" id="buildResume">
+            <h3>Build Your Resume</h3>
+            <p>Create and download your professional resume instantly.</p>
+            <br>
+            <button class="primary-btn">Build Resume</button>
+        </div>
+
+
+        <div class="dashboard-card" id="chatbot">
+            <h3>Ask AI</h3>
+            <p>
+                Ask any question about your project, studies,
+                coding, or interview topics.
+            </p>
+            <button class="success-btn">Let's Chat</button>
+        </div>
+
+
+        <div class="dashboard-card" id="avatarInterview">
+            <h3>Avatar Interview</h3>
+            <p>
+                Practice real interview process with a speaking
+                AI interviewer avatar.
+            </p>
+            <button class="primary-btn">Start Interview</button>
+        </div>
+
+
+        <!-- NEW CV QUESTION CARD -->
+
+        <div class="dashboard-card" id="cvQuestion">
+
+            <h3>CV Questions</h3>
+
+            <p>
+                Upload your CV and practice interview questions
+                generated specifically from your resume.
+            </p>
+
+            <button class="success-btn">
+                CV Questions
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<button id="openFeedbackBtn" class="feedback-float-btn">
+    Feedback
+</button>
+
+
+<div id="feedbackModal" class="feedback-modal">
+
+    <div class="feedback-modal-content">
+
+        <h3>Share Your Feedback</h3>
+
+        <p>
+            Tell us what you liked or what should be improved.
+        </p>
+
+        <textarea
+            id="feedbackText"
+            placeholder="Write your feedback here..."
+        ></textarea>
+
+        <div class="feedback-actions">
+
+            <button
+                id="submitFeedbackBtn"
+                class="feedback-submit-btn">
+                Submit Feedback
+            </button>
+
+            <button
+                id="closeFeedbackBtn"
+                class="feedback-close-btn">
+                Close
+            </button>
+
+        </div>
+
+        <p id="feedbackMessage"></p>
+
+    </div>
+
+</div>
+
+
+<script src="js/dashboard.js"></script>
+
+</body>
+</html>

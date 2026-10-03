@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .admin-wrapper{
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .admin-cards{
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap:20px;
+            margin-top:20px;
+        }
+
+        .admin-card{
+            background:rgba(255,255,255,0.08);
+            padding:25px;
+            border-radius:15px;
+            backdrop-filter:blur(10px);
+            box-shadow:0 10px 30px rgba(0,0,0,0.5);
+            text-align:center;
+        }
+
+        .admin-card h3{
+            margin-bottom:10px;
+        }
+
+        .admin-card p{
+            font-size:24px;
+            font-weight:bold;
+        }
+
+        .admin-links{
+            margin-top:30px;
+            display:flex;
+            gap:15px;
+            flex-wrap:wrap;
+        }
+
+        .chart-box{
+            margin-top: 35px;
+            background: rgba(255,255,255,0.08);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .chart-box h3{
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        canvas{
+            background: white;
+            border-radius: 10px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <h2>Admin Dashboard</h2>
+    <ul>
+        <li><a href="#" id="adminLogout">Logout</a></li>
+    </ul>
+</nav>
+
+<div class="admin-wrapper">
+    <h2>Welcome, <span id="adminName">Admin</span></h2>
+
+    <div class="admin-cards">
+        <div class="admin-card">
+            <h3>Total Users</h3>
+            <p id="totalUsers">0</p>
+        </div>
+
+        <div class="admin-card">
+            <h3>Total Interviews</h3>
+            <p id="totalInterviews">0</p>
+        </div>
+
+        <div class="admin-card">
+            <h3>Total Resumes</h3>
+            <p id="totalResumes">0</p>
+        </div>
+
+        <div class="admin-card">
+            <h3>Total Feedbacks</h3>
+            <p id="totalFeedbacks">0</p>
+        </div>
+
+        <div class="admin-card">
+            <h3>Average Score</h3>
+            <p id="averageScore">0</p>
+        </div>
+
+        <div class="admin-card">
+            <h3>Top Section</h3>
+            <p id="topSection">N/A</p>
+        </div>
+
+        <div class="admin-card">
+            <h3>Weakest Section</h3>
+            <p id="weakestSection">N/A</p>
+        </div>
+    </div>
+
+    <div class="admin-links">
+        <button onclick="window.location.href='admin-users.html'">Manage Users</button>
+        <button onclick="window.location.href='admin-questions.html'">Manage Questions</button>
+        <button onclick="window.location.href='admin-interviews.html'">Interview Records</button>
+        <button onclick="window.location.href='admin-resumes.html'">Resume Records</button>
+        <button id="manageFeedbacksBtn">Manage Feedbacks</button>
+    </div>
+
+    <div class="chart-box">
+        <h3>Interview Sections Analytics</h3>
+        <canvas id="analyticsChart"></canvas>
+    </div>
+</div>
+
+<script src="js/admin-dashboard.js"></script>
+</body>
+</html>

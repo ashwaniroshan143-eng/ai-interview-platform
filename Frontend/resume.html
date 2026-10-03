@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resume Builder</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js"></script>
+
+    <style>
+        .resume-page{
+            width: 90%;
+            max-width: 1400px;
+            margin: 30px auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .resume-form-card,
+        .resume-preview-card{
+            background: rgba(255,255,255,0.08);
+            border-radius: 18px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            padding: 25px;
+        }
+
+        .resume-form-card h2,
+        .resume-preview-card h2{
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .resume-form-card form{
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .resume-form-card input,
+        .resume-form-card textarea{
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .resume-form-card textarea{
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .resume-btn-row{
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .resume-preview{
+            background: #ffffff;
+            color: #222;
+            border-radius: 14px;
+            padding: 30px;
+            min-height: 650px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .resume-header{
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            border-bottom: 2px solid #e5e5e5;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .resume-header-left{
+            flex: 1;
+        }
+
+        .resume-header h1{
+            margin: 0;
+            font-size: 30px;
+            color: #111;
+        }
+
+        .resume-contact{
+            margin-top: 8px;
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .resume-photo-box{
+            width: 110px;
+            height: 110px;
+            border-radius: 12px;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 1px solid #ddd;
+            background: #f5f5f5;
+            display: none;
+        }
+
+        .resume-photo-box img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .resume-section{
+            margin-bottom: 20px;
+        }
+
+        .resume-section h3{
+            margin-bottom: 8px;
+            font-size: 18px;
+            color: #0f2027;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .resume-section p{
+            margin: 0;
+            line-height: 1.7;
+            white-space: pre-line;
+        }
+
+        .skill-tags{
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .skill-tag{
+            background: #eef4ff;
+            color: #1d4ed8;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .resume-empty{
+            color: #888;
+            font-style: italic;
+        }
+
+        .photo-note{
+            font-size: 12px;
+            color: #dbeafe;
+            margin-top: -6px;
+        }
+
+        @media (max-width: 992px){
+            .resume-page{
+                grid-template-columns: 1fr;
+            }
+
+            .resume-preview{
+                min-height: auto;
+            }
+        }
+
+        @media (max-width: 700px){
+            .resume-header{
+                flex-direction: column-reverse;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 600px){
+            .resume-page{
+                width: 95%;
+            }
+
+            .resume-form-card,
+            .resume-preview-card{
+                padding: 18px;
+            }
+
+            .resume-preview{
+                padding: 20px;
+            }
+
+            .resume-header h1{
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="vanta-bg"></div>
+<nav>
+ <div class="nav-logo">
+        <img src="images/logo.png" alt="logo">
+        <h2>AI Student साथी</h2>
+    </div>
+    <ul>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="#" id="logoutLink">Logout</a></li>
+    </ul>
+</nav>
+
+<div class="resume-page">
+
+    <div class="resume-form-card">
+        <h2>Build Your Resume</h2>
+
+        <form id="resumeForm">
+            <input type="text" id="fullName" placeholder="Full Name" required>
+            <input type="email" id="email" placeholder="Email Address" required>
+            <input type="text" id="phone" placeholder="Phone Number">
+            <input type="text" id="location" placeholder="Location">
+            <input type="text" id="linkedin" placeholder="LinkedIn / Portfolio Link">
+
+            <label for="photo">Photo (Optional)</label>
+            <input type="file" id="photo" accept="image/*">
+            <p class="photo-note">Add passport-style or professional photo if needed.</p>
+
+            <textarea id="summary" placeholder="Professional Summary"></textarea>
+            <textarea id="education" placeholder="Education (Example: MCA - XYZ College - 2024-2026)"></textarea>
+            <textarea id="skills" placeholder="Skills (comma separated)"></textarea>
+            <textarea id="experience" placeholder="Experience / Internship"></textarea>
+            <textarea id="projects" placeholder="Projects"></textarea>
+            <textarea id="certifications" placeholder="Certifications / Achievements"></textarea>
+
+            <div class="resume-btn-row">
+                <button type="button" id="previewBtn">Update Preview</button>
+                <button type="button" id="saveResumeBtn">Save Resume</button>
+                <button type="button" id="downloadPdfBtn">Download PDF</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="resume-preview-card">
+        <h2>Live Preview</h2>
+
+        <div class="resume-preview" id="resumePreview">
+            <div class="resume-header">
+                <div class="resume-header-left">
+                    <h1 id="previewName">Your Name</h1>
+                    <div class="resume-contact">
+                        <div id="previewEmail">your@email.com</div>
+                        <div id="previewPhone">Phone Number</div>
+                        <div id="previewLocation">Location</div>
+                        <div id="previewLinkedin">LinkedIn / Portfolio</div>
+                    </div>
+                </div>
+
+                <div class="resume-photo-box" id="previewPhotoBox">
+                    <img id="previewPhoto" alt="Resume Photo">
+                </div>
+            </div>
+
+            <div class="resume-section">
+                <h3>Professional Summary</h3>
+                <p id="previewSummary" class="resume-empty">Your summary will appear here.</p>
+            </div>
+
+            <div class="resume-section">
+                <h3>Education</h3>
+                <p id="previewEducation" class="resume-empty">Your education details will appear here.</p>
+            </div>
+
+            <div class="resume-section">
+                <h3>Skills</h3>
+                <div class="skill-tags" id="previewSkills">
+                    <span class="resume-empty">Your skills will appear here.</span>
+                </div>
+            </div>
+
+            <div class="resume-section">
+                <h3>Experience</h3>
+                <p id="previewExperience" class="resume-empty">Your experience details will appear here.</p>
+            </div>
+
+            <div class="resume-section">
+                <h3>Projects</h3>
+                <p id="previewProjects" class="resume-empty">Your project details will appear here.</p>
+            </div>
+
+            <div class="resume-section">
+                <h3>Certifications / Achievements</h3>
+                <p id="previewCertifications" class="resume-empty">Your certifications will appear here.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="js/resume.js"></script>
+
+<script>
+
+</script>
+</body>
+</html>
